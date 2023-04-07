@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using System;
-
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using API_SmartyEnergy.Models;
-using Newtonsoft.Json.Linq;
-namespace API_SmartyEnergy.Controllers
+
+namespace SmarEnergy.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class MedidorController : ControllerBase
     {
+
         // GET: api/<ArduinoController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -20,12 +18,22 @@ namespace API_SmartyEnergy.Controllers
         }
 
         // GET api/<ArduinoController>/5
-        [HttpGet("{id}")]
+        [HttpGet("BuscarConsumo/{id}")]
+
         public IActionResult BuscarConsumo(int id)
         {
             /*transformando um array em um Json no formarto string, pois é possível converter para um JArray
             um objeto do tipo Json*/
-            string json = JsonConvert.SerializeObject(Medidor.buscarConsumo(id)); //provisóriamente o id que pretendemos receber é o código, mas deve mudar para chava estrangeira resdiência
+            string json = JsonConvert.SerializeObject(Medidor.buscarConsumo(id)); //provisóriamente o id que pretendemos receber é o código, mas deve mudar para chave estrangeira resdiência
+            return Ok(json); // codigo 200 sucesso
+        }
+
+        [HttpGet("BuscarConsumoDiario/{id}")]
+        public IActionResult BuscarConsumoDiario(int id)
+        {
+            /*transformando um array em um Json no formarto string, pois é possível converter para um JArray
+            um objeto do tipo Json*/
+            string json = JsonConvert.SerializeObject(Medidor.buscarConsumoDiario(id)); //provisóriamente o id que pretendemos receber é o código, mas deve mudar para chava estrangeira resdiência
             return Ok(json); // codigo 200 sucesso
         }
 
@@ -48,3 +56,4 @@ namespace API_SmartyEnergy.Controllers
         }
     }
 }
+
