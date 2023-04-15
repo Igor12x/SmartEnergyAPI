@@ -4,34 +4,41 @@ namespace API_SmartyEnergy.Models
 {
     public class Medidor
     {
-        //string de conexão
-        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
 
         //precisamos incluir o atribudo da chave estrangeira residência
-        public int codigo;
-        public double consumo;
-        public string registro_dia; //espera receber apenas a data
-        public string registro_horario; //aqui apenas o horário
-        public static string consumo2;
+        private int Codigo { get; set; }
+        private double Consumo { get; set; }
+        private string Registro_dia { get; set; }
+        private string Registro_horario { get; set; }
+        private string ConsumoDiario { get; set; }
 
         public Medidor(int codigo, double consumo, string registro_dia, string registro_horario)
         {
-            this.codigo = codigo;
-            this.consumo = consumo;
-            this.registro_dia = registro_dia;
-            this.registro_horario = registro_horario;
+            Codigo = codigo;
+            Consumo = consumo;
+            Registro_dia = registro_dia;
+            Registro_horario = registro_horario;
+        }
+
+        public Medidor(string consumoDiario)
+        {
+            this.ConsumoDiario = consumoDiario;
         }
 
         internal static object buscarConsumo(int id)
         {
+            //string de conexão
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+
             try
             {
+
                 conexao.Open();
                 MySqlCommand qry = new MySqlCommand(
                     "SELECT * FROM MEDIDOR WHERE codigo = @cod", conexao);
                 qry.Parameters.AddWithValue("@cod", id);
 
-                List<Medidor> lista = new List<Medidor>();
+                
 
                 MySqlDataReader leitor = qry.ExecuteReader();
 
@@ -47,24 +54,35 @@ namespace API_SmartyEnergy.Models
 
                     Medidor a = new Medidor(codigo, consumo, registro_dia, registro_horario);
 
-                    lista.Add(a);
-                } // fim do if
+                    conexao.Close();
 
-                conexao.Close();
 
-                return lista;
-
+                    return a;
+                } else {
+                    throw new Exception("Não foi possível encontrar seu consumo");
+                }
             }
             catch (Exception e)
             {
 
                 /*precisamos alterar o método para retornar um object,
                  *pois retornando uma array de Arduino não é possível devolver uma mensagem de erro para ser identificado*/
-                return e.Message;
+                throw new Exception("Erro ao buscar o seu consumo", e);
+            }
+            finally
+            {
+                //Fechar a conexão com o banco de dados
+                if (conexao != null)
+                {
+                    conexao.Close();
+                }
             }
         }
         internal static object buscarConsumoDiario(int id)
         {
+            //string de conexão
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+
             try
             {
                 conexao.Open();
@@ -81,18 +99,19 @@ namespace API_SmartyEnergy.Models
                     /*criei variavéis apenas para organizar melhor, é possível colocar o leitor 
                      * dentro dos parâmetros do objeto Arduino*/
 
+                    Medidor medidor = new Medidor(leitor["SUM(consumo)"].ToString());
 
-                    consumo2 = (leitor["SUM(consumo)"].ToString());
+                    conexao.Close();
+
+                    return medidor;
+
+                }
+                else
+                {
+                    return "Nenhum consumo encontrado";
+                }
 
 
-
-
-
-                } // fim do if
-
-                conexao.Close();
-
-                return consumo2;
 
             }
             catch (Exception e)
@@ -101,6 +120,14 @@ namespace API_SmartyEnergy.Models
                 /*precisamos alterar o método para retornar um object,
                  *pois retornando uma array de Arduino não é possível devolver uma mensagem de erro para ser identificado*/
                 return e.Message;
+            }
+            finally
+            {
+                //Fechar a conexão com o banco de dados
+                if (conexao != null)
+                {
+                    conexao.Close();
+                }
             }
         }
     }
