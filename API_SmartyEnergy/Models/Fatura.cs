@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SmartAPI.Models {
     public class Fatura {
-
-        public string ValorUltimaFatura { get; set; }
-        public string ConsumoUltimaFatura { get; set; }
+        private string valorUltimaFatura;
+        private string consumoUltimaFatura;
+        public string ValorUltimaFatura{ get => valorUltimaFatura; set => valorUltimaFatura = value; }
+        public string ConsumoUltimaFatura { get => consumoUltimaFatura; set => consumoUltimaFatura = value; }
 
         static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
 

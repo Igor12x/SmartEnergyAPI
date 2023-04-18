@@ -33,6 +33,7 @@ namespace SmarEnergy.API.Controllers
         {
             /*transformando um array em um Json no formarto string, pois é possível converter para um JArray
             um objeto do tipo Json*/
+
             string json = JsonConvert.SerializeObject(Medidor.buscarConsumoDiario(id)); //provisóriamente o id que pretendemos receber é o código, mas deve mudar para chava estrangeira resdiência
             return Ok(json); // codigo 200 sucesso
         }

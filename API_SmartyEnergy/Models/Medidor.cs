@@ -5,25 +5,13 @@ namespace API_SmartyEnergy.Models
     public class Medidor
     {
 
-        //precisamos incluir o atribudo da chave estrangeira residência
-        private int Codigo { get; set; }
         private double Consumo { get; set; }
-        private string Registro_dia { get; set; }
-        private string Registro_horario { get; set; }
-        private string ConsumoDiario { get; set; }
 
-        public Medidor(int codigo, double consumo, string registro_dia, string registro_horario)
+        public Medidor(double consumo)
         {
-            Codigo = codigo;
             Consumo = consumo;
-            Registro_dia = registro_dia;
-            Registro_horario = registro_horario;
         }
 
-        public Medidor(string consumoDiario)
-        {
-            this.ConsumoDiario = consumoDiario;
-        }
 
         internal static object buscarConsumo(int id)
         {
@@ -35,10 +23,10 @@ namespace API_SmartyEnergy.Models
 
                 conexao.Open();
                 MySqlCommand qry = new MySqlCommand(
-                    "SELECT * FROM MEDIDOR WHERE codigo = @cod", conexao);
+                    "SELECT SUM(consumo) FROM MEDIDOR WHERE FK_RESIDENCIA_codigo = @cod", conexao);
                 qry.Parameters.AddWithValue("@cod", id);
 
-                
+
 
                 MySqlDataReader leitor = qry.ExecuteReader();
 
@@ -47,18 +35,17 @@ namespace API_SmartyEnergy.Models
                     /*criei variavéis apenas para organizar melhor, é possível colocar o leitor 
                      * dentro dos parâmetros do objeto Arduino*/
 
-                    int codigo = int.Parse(leitor["codigo"].ToString());
-                    double consumo = double.Parse(leitor["consumo"].ToString());
-                    string registro_dia = (leitor["registro_dia"].ToString());
-                    string registro_horario = (leitor["registro_horario"].ToString());
+                    double consumo = double.Parse(leitor["SUM(consumo)"].ToString());
 
-                    Medidor a = new Medidor(codigo, consumo, registro_dia, registro_horario);
+                    Medidor a = new Medidor(consumo);
 
                     conexao.Close();
 
 
                     return a;
-                } else {
+                }
+                else
+                {
                     throw new Exception("Não foi possível encontrar seu consumo");
                 }
             }
@@ -99,7 +86,7 @@ namespace API_SmartyEnergy.Models
                     /*criei variavéis apenas para organizar melhor, é possível colocar o leitor 
                      * dentro dos parâmetros do objeto Arduino*/
 
-                    Medidor medidor = new Medidor(leitor["SUM(consumo)"].ToString());
+                    Medidor medidor = new Medidor(double.Parse(leitor["SUM(consumo)"].ToString()));
 
                     conexao.Close();
 
