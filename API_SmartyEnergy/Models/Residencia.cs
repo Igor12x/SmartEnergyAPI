@@ -25,7 +25,7 @@ namespace API_SmartyEnergy.Models
             Bairro = bairro;
         }
 
-        public List<Residencia> listarResidencias(int id)
+        internal static List<Residencia> listarResidencias(int idCliente )
         {
 
             //string de conexão

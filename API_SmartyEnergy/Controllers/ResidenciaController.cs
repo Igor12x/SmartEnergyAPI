@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API_SmartyEnergy.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,11 +11,13 @@ namespace API_SmartyEnergy.Controllers
     public class ResidenciaController : ControllerBase
     {
         // GET: api/<ResidenciaController>
-        [HttpGet("buscarCompanhia")]
-        public IEnumerable<string> Get()
+        [HttpGet("buscar/{id}")]
+        public IActionResult buscarCompanhia(int id)
         {
-            return new string[] { "value1", "value2" };
+            string json = JsonConvert.SerializeObject(Residencia.listarResidencias(id));
+            return Ok(json);
         }
+
 
         // GET api/<ResidenciaController>/5
         [HttpGet("{id}")]
