@@ -1,8 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SmartAPI.Models {
     public class Fatura {
@@ -41,12 +37,13 @@ namespace SmartAPI.Models {
                     throw new Exception("Não foi encontrada nenhuma fatura para o código especificado.");
                 }
             } catch (Exception e) {
+
                 throw new Exception("Erro ao buscar a última fatura.", e);
+
             } finally {
                 if(conexao != null) {
                     conexao.Close();
-                }
-                
+                }                
             }
         }
     }

@@ -11,37 +11,11 @@ namespace API_SmartyEnergy.Controllers
     public class ResidenciaController : ControllerBase
     {
         // GET: api/<ResidenciaController>
-        [HttpGet("buscar/{id}")]
-        public IActionResult buscarCompanhia(int id)
+        [HttpGet("listarResidencias/{id}")]
+        public IActionResult listarResidencias(int id)
         {
-            string json = JsonConvert.SerializeObject(Residencia.listarResidencias(id));
+            string json = JsonConvert.SerializeObject(Residencia.listar(id));
             return Ok(json);
-        }
-
-
-        // GET api/<ResidenciaController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ResidenciaController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ResidenciaController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ResidenciaController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
