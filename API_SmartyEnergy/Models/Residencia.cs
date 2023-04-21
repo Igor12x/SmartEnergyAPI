@@ -62,7 +62,6 @@ namespace API_SmartyEnergy.Models
                     residencias.Add(r);
 
                 }
-                conexao.Close();
 
                 return residencias;
 
