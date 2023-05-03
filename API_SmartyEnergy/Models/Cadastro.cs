@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using SmartEnergyAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,13 @@ namespace API_SmartEnergy.Models
                 if (conexao.State == System.Data.ConnectionState.Open)
                     conexao.Close();
                 throw new Exception("Erro ao cadastrar o cliente", e); ;
+            }
+            finally
+            {
+                if (conexao != null)
+                {
+                    conexao.Close();
+                }
             }
         }
 

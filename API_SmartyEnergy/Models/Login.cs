@@ -40,7 +40,9 @@ namespace SmartEnergyAPI.Models {
                         leitor["nome"].ToString(),
                         leitor["cpf"].ToString(),
                         leitor["email"].ToString(),
-                        leitor["telefone"].ToString());
+                        leitor["telefone"].ToString(),
+                        leitor["senha"].ToString(),
+                        int.Parse(leitor["codigo"].ToString()));
                     return cliente;
                 } else {
                     throw new InvalidCredentialsException("As credenciais fornecidas são inválidas. Verifique se o CPF e a senha estão corretos.");
