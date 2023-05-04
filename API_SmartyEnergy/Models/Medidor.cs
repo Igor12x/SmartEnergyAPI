@@ -20,7 +20,7 @@ namespace API_SmartyEnergy.Models
             {
                 conexao.Open();
                 MySqlCommand qry = new MySqlCommand(
-                    "SELECT SUM(consumo) FROM MEDIDOR WHERE FK_RESIDENCIA_codigo = @cod", conexao);
+                    "SELECT SUM(consumo) FROM medidor WHERE FK_RESIDENCIA_codigo = @cod AND MONTH(registro_dia) = MONTH(now())", conexao);
                 qry.Parameters.AddWithValue("@cod", id);
 
                 MySqlDataReader leitor = qry.ExecuteReader();
