@@ -25,6 +25,12 @@ namespace SmarEnergy.API.Controllers
             string json = JsonConvert.SerializeObject(Medidor.buscarConsumoDiario(id));
             return Ok(json);
         }
+        
+        [HttpPost("api/GravarConsumo")]
+        public void GravarConsumo([FromQuery] double kwh, int idResidencia)
+        {
+            Medidor.GravarConsumo(kwh, idResidencia);
+        }
     }
 }
 
