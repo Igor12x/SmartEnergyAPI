@@ -11,8 +11,8 @@ namespace API_SmartyEnergy.Controllers
         [HttpGet("CodigoVerificacao/{email}")]
         public IActionResult EnviarCodigoVerificacao(string email)
         {
-            string codigoVericacao = RecuperarSenha.EnviarCodigoVerificacao(email);
-            return Ok(codigoVericacao);
+            string codigoVerificacao = RecuperarSenha.EnviarCodigoVerificacao(email);
+            return Ok(codigoVerificacao);
         }
     }
 }
