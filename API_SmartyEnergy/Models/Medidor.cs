@@ -14,7 +14,7 @@ namespace API_SmartyEnergy.Models
         }
         internal static Medidor buscarConsumo(int id)
         {
-            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234");
 
             try
             {
@@ -50,7 +50,7 @@ namespace API_SmartyEnergy.Models
         }
         internal static object buscarConsumoDiario(int id)
         {
-            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234");
 
             try
             {

@@ -1,35 +1,41 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace SmartEnergyAPI.Models {
-    public class Cliente {
-        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+namespace SmartEnergyAPI.Models
+{
+    public class Cliente
+    {
 
-        private string nome, cpf, email, senha, telefone;
+
+
+        private string nome, cpf, email, senha, telefone, sobrenome;
         private int codigo;
 
+
         [JsonConstructor]
-        public Cliente(string nome, string cpf, string email, string telefone, string senha) {
-            this.nome = nome;
-            this.cpf = cpf;
-            this.email = email;
-            this.telefone = telefone;
-            this.senha = senha;
-        }
-        public Cliente(string nome, string cpf, string email, string telefone, string senha, int codigo)
+        public Cliente(string nome, string sobrenome, string cpf, string email, string telefone, string senha)
         {
-            this.nome = nome;
-            this.cpf = cpf;
-            this.email = email;
-            this.telefone = telefone;
-            this.senha = senha;
-            this.codigo = codigo;
+            Nome = nome;
+            Sobrenome = sobrenome;
+            Cpf = cpf;
+            Email = email;
+            Telefone = telefone;
+            Senha = senha;
         }
+        public Cliente(string nome, string sobrenome, string cpf, string email, string telefone, string senha, int codigo)
+        {
+            Nome = nome;
+            Sobrenome = sobrenome;
+            Cpf = cpf;
+            Email = email;
+            Telefone = telefone;
+            Senha = senha;
+            Codigo = codigo;
+        }
+
+
         public Cliente() { }
+
 
         public string Nome { get => nome; set => nome = value; }
         public string Cpf { get => cpf; set => cpf = value; }
@@ -37,5 +43,8 @@ namespace SmartEnergyAPI.Models {
         public string Telefone { get => telefone; set => telefone = value; }
         public string Senha { get => senha; set => senha = value; }
         public int Codigo { get => codigo; set => codigo = value; }
+        public string Sobrenome { get => sobrenome; set => sobrenome = value; }
+
+       
     }
 }

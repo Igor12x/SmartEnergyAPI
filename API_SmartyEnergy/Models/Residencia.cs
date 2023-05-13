@@ -36,7 +36,7 @@ namespace API_SmartyEnergy.Models
         internal static List<Residencia> listar(int idCliente)
         {
             List<Residencia> residencias = new List<Residencia>();
-            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=db_smart_energy2 ;user id=aluno; password=Senai1234");
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy;user id=aluno; password=Senai1234");
             try
             {
                 conexao.Open();

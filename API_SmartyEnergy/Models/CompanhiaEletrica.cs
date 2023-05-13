@@ -27,13 +27,13 @@ namespace API_SmartyEnergy.Models
         }
         internal static CompanhiaEletrica buscar(int id)
         {
-            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=db_smart_energy2; user id=aluno; password=Senai1234");
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234");
             try
             {
                 conexao.Open();
 
                 MySqlCommand qry = new MySqlCommand(
-                   "Select * from companhia WHERE FK_RESIDENCIA_codigo = @cod", conexao);
+                "SELECT * FROM companhia c INNER JOIN residencia r ON c.codigo = r.FK_COMPANHIA_codigo WHERE r.codigo = @cod", conexao);
 
                 qry.Parameters.AddWithValue("@cod", id);
 
@@ -41,8 +41,8 @@ namespace API_SmartyEnergy.Models
 
                 if (leitor.Read())
                 {
-                    return new CompanhiaEletrica(double.Parse(leitor["tarifa_tusd"].ToString()),
-                                                double.Parse(leitor["tarifa_te"].ToString()),
+                    return new CompanhiaEletrica(double.Parse(leitor["tarifa_TUSD"].ToString()),
+                                                double.Parse(leitor["tarifa_TE"].ToString()),
                                                 double.Parse(leitor["pis"].ToString()),
                                                 double.Parse(leitor["cofins"].ToString()),
                                                 double.Parse(leitor["icms"].ToString())

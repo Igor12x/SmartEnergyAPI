@@ -9,8 +9,8 @@ namespace API_SmartEnergy.Controllers
     [ApiController]
     public class CadastroController : ControllerBase {
         [HttpPost]
-        public void Post([FromBody] Cliente cliente) { 
-            Cadastro.Cadastrar(cliente);
-    }
+        public IActionResult Post([FromBody] Cliente cliente) {
+            return Ok(Cadastro.Cadastrar(cliente));
+        }
     }
 }

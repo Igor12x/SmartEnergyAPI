@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SmartEnergyAPI.Models {
     public class Login {
-        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=db_smart_energy2; user id=aluno; password=Senai1234");
+        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234");
+
 
         private string cpf;
         private string senha;
-
         public string Cpf { get => cpf; set => cpf = value; }
         public string Senha { get => senha; set => senha = value; }
 
@@ -20,7 +20,7 @@ namespace SmartEnergyAPI.Models {
             Senha = senha;
         }
 
-        internal Cliente validarLogin(Login login) {
+        internal Cliente ValidarLogin(Login login) {
             try {
                 conexao.Open();
             } catch (MySqlException ex) {
@@ -38,6 +38,7 @@ namespace SmartEnergyAPI.Models {
                 if (leitor.Read()) {
                     Cliente cliente = new Cliente(
                         leitor["nome"].ToString(),
+                        leitor["sobrenome"].ToString(),
                         leitor["cpf"].ToString(),
                         leitor["email"].ToString(),
                         leitor["telefone"].ToString(),

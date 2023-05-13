@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿    using MySql.Data.MySqlClient;
 using SmartEnergyAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -9,31 +9,28 @@ namespace API_SmartEnergy.Models
 {
     public class Cadastro
     {
-        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=db_smart_energy2; user id=aluno; password=Senai1234");
+        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234");
 
-        internal static Boolean Cadastrar(Cliente cliente) {
+        internal static String Cadastrar(Cliente cliente) {
             try {
                 conexao.Open();
                
                 MySqlCommand qry = new MySqlCommand(
-                    "INSERT INTO CLIENTE (nome, cpf, senha, email, telefone) values(@nome, @cpf, @senha, @email, @telefone)", conexao);
+                    "INSERT INTO CLIENTE (nome, sobrenome, cpf, senha, email, telefone) values(@nome, @sobrenome, @cpf, @senha, @email, @telefone)", conexao);
                 qry.Parameters.AddWithValue("@nome", cliente.Nome);
+                qry.Parameters.AddWithValue("@sobrenome", cliente.Sobrenome);
                 qry.Parameters.AddWithValue("@cpf", cliente.Cpf);
                 qry.Parameters.AddWithValue("@senha", cliente.Senha);
                 qry.Parameters.AddWithValue("@email", cliente.Email);
                 qry.Parameters.AddWithValue("@telefone", cliente.Telefone);
 
-                MySqlDataReader leitor = qry.ExecuteReader();
-
-
-                if (leitor.Read()) {
-                    
-
-                    return true;
-                } else {
-                    
-                    return false;
+                int linhasAfetadas = qry.ExecuteNonQuery();
+                if (linhasAfetadas > 0)
+                {
+                    return "Cadastrado com sucesso";
                 }
+                else { return "Não foi possível cadastrar"; }
+                
             } catch (Exception e) {
 
                 /*precisamos alterar o método para retornar um object,
@@ -41,7 +38,7 @@ namespace API_SmartEnergy.Models
 
                 if (conexao.State == System.Data.ConnectionState.Open)
                     conexao.Close();
-                throw new Exception("Erro ao cadastrar o cliente", e); ;
+                throw new Exception("Erro ao cadastrar o cliente", e);
             }
             finally
             {
@@ -51,7 +48,6 @@ namespace API_SmartEnergy.Models
                 }
             }
         }
-
     }
 }
 
