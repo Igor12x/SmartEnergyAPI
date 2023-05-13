@@ -26,7 +26,7 @@ namespace SmarEnergy.API.Controllers
             return Ok(json);
         }
         
-        [HttpPost("api/GravarConsumo")]
+        [HttpPost("GravarConsumo")]
         public void GravarConsumo([FromQuery] double kwh, int idResidencia)
         {
             Medidor.GravarConsumo(kwh, idResidencia);
