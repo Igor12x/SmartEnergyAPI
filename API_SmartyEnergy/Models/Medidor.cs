@@ -86,5 +86,41 @@ namespace API_SmartyEnergy.Models
                 }
             }
         }
+        
+        internal static Boolean GravarConsumo(double kwh, int idResidencia)
+        {
+            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234");
+
+            try
+            {
+                conexao.Open();
+                MySqlCommand qry = new MySqlCommand(
+                    "INSERT INTO MEDIDOR(consumo, registro_dia, registro_horario, medicao_atual, FK_RESIDENCIA_codigo) VALUES (@consumo, CURDATE(), CURTIME(), 32552, @idResidencia);", conexao);
+                qry.Parameters.AddWithValue("@consumo", kwh);
+                qry.Parameters.AddWithValue("@idResidencia", idResidencia);
+
+                MySqlDataReader leitor = qry.ExecuteReader();
+
+                if (leitor.Read())
+                { 
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao gravar consumo", e);
+            }
+            finally
+            {
+                if (conexao != null)
+                {
+                    conexao.Close();
+                }
+            }
+        }
     }
 }
