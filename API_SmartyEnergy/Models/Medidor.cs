@@ -1,17 +1,28 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
+using System.Text.Json.Serialization;
 
 namespace API_SmartyEnergy.Models
 {
     public class Medidor
     {
         private double consumo;
+        private int idResidencia;
 
         public double Consumo { get => consumo; set => consumo = value; }
+        public int IdResidencia { get => idResidencia; set => idResidencia = value; }
 
         public Medidor(double consumo)
         {
             Consumo = consumo;
         }
+
+        [JsonConstructor]
+        public Medidor(double consumo, int idResidencia)
+        {
+            this.consumo = consumo;
+            this.idResidencia = idResidencia;
+        }
+
         internal static Medidor buscarConsumo(int id)
         {
             MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234");
@@ -87,7 +98,7 @@ namespace API_SmartyEnergy.Models
             }
         }
         
-        internal static Boolean GravarConsumo(double kwh, int idResidencia)
+        internal static Boolean GravarConsumo(Medidor medidorResidencia)
         {
             MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234");
 
@@ -96,8 +107,8 @@ namespace API_SmartyEnergy.Models
                 conexao.Open();
                 MySqlCommand qry = new MySqlCommand(
                     "INSERT INTO MEDIDOR(consumo, registro_dia, registro_horario, medicao_atual, FK_RESIDENCIA_codigo) VALUES (@consumo, CURDATE(), CURTIME(), 32552, @idResidencia);", conexao);
-                qry.Parameters.AddWithValue("@consumo", kwh);
-                qry.Parameters.AddWithValue("@idResidencia", idResidencia);
+                qry.Parameters.AddWithValue("@consumo", medidorResidencia.consumo);
+                qry.Parameters.AddWithValue("@idResidencia", medidorResidencia.idResidencia);
 
                 MySqlDataReader leitor = qry.ExecuteReader();
 
