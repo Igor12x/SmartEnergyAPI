@@ -14,5 +14,11 @@ namespace API_SmartyEnergy.Controllers
             string codigoVerificacao = RecuperarSenha.EnviarCodigoVerificacao(email);
             return Ok(codigoVerificacao);
         }
+        
+        [HttpPut("RedefinirSenha")]
+        public IActionResult AlterarSenhaCliente([FromBody]  Cliente cliente)
+        {            
+            return Ok(RecuperarSenha.RedefinirSenha(cliente));
+        }
     }
 }
