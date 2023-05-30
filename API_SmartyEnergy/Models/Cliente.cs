@@ -10,19 +10,8 @@ namespace SmartEnergyAPI.Models
 
         private string nome, cpf, email, senha, telefone, sobrenome;
         private int codigo;
-
-
-        [JsonConstructor]
-        public Cliente(string nome, string sobrenome, string cpf, string email, string telefone, string senha)
-        {
-            Nome = nome;
-            Sobrenome = sobrenome;
-            Cpf = cpf;
-            Email = email;
-            Telefone = telefone;
-            Senha = senha;
-        }
-        public Cliente(string nome, string sobrenome, string cpf, string email, string telefone, string senha, int codigo)
+        
+        public Cliente(string nome, string sobrenome, string cpf, string email, string telefone, string senha, int codigo = 0)
         {
             Nome = nome;
             Sobrenome = sobrenome;
