@@ -15,7 +15,6 @@ namespace API_SmartyEnergy.Models
         private readonly string _usuarioEmail;
         private readonly string _senha;
 
-        //static MySqlConnection conexao = new MySqlConnection("server=127.0.0.1; port=3306; database=smartenergy; user id=root; password=1234");
         private static string enderecoConexao = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
 
         public RecuperarSenha(string host, int port, bool useSsl, string usuarioEmail, string senha)
@@ -27,9 +26,9 @@ namespace API_SmartyEnergy.Models
             _senha = senha;
         }
 
-        internal static string EnviarCodigoVerificacao(string emailCliente)
+        public string EnviarCodigoVerificacao(string emailCliente)
         {
-            using (MySqlConnection conexao = new MySqlConnection(enderecoConexao))
+            using (var conexao = new MySqlConnection(enderecoConexao))
             {
                 try
                 {
@@ -42,111 +41,81 @@ namespace API_SmartyEnergy.Models
 
                 try
                 {
-                    MySqlCommand qry = new MySqlCommand(
-                        "SELECT * FROM cliente WHERE email = @email", conexao);
-                    qry.Parameters.AddWithValue("@email", emailCliente);
-
-                    MySqlDataReader leitor = qry.ExecuteReader();
-
-                    if (leitor.Read())
+                    using (var qry = new MySqlCommand("SELECT * FROM cliente WHERE email = @email", conexao))
                     {
-                        var numAleatorio = new Random();
-                        var codigoVerificacao = numAleatorio.Next(1000, 9999).ToString();
+                        qry.Parameters.AddWithValue("@email", emailCliente);
 
-                        using (var client = new SmtpClient())
+                        using (var leitor = qry.ExecuteReader())
                         {
-                            client.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
-                            client.Authenticate("suporte.smartenergy@hotmail.com", "Smart1234");
-
-                            var message = new MimeMessage();
-                            message.From.Add(new MailboxAddress("Smart Energy", "suporte.smartenergy@hotmail.com"));
-                            message.To.Add(new MailboxAddress("", emailCliente));
-                            message.Subject = "Codigo de verificação - Smart Energy";
-                            message.Body = new TextPart("html")
+                            if (leitor.Read())
                             {
-                                Text = string.Format("Seu código de verificação é: <strong>{0}</strong>", codigoVerificacao)
-                            };
+                                var numAleatorio = new Random();
+                                var codigoVerificacao = numAleatorio.Next(1000, 9999).ToString();
 
-                            client.Send(message);
-                            client.Disconnect(true);
+                                using (var client = new SmtpClient())
+                                {
+                                    client.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                                    client.Authenticate("suporte.smartenergy@hotmail.com", "Smart1234");
+
+                                    var message = new MimeMessage();
+                                    message.From.Add(new MailboxAddress("Smart Energy", "suporte.smartenergy@hotmail.com"));
+                                    message.To.Add(new MailboxAddress("", emailCliente));
+                                    message.Subject = "Codigo de verificação - Smart Energy";
+                                    message.Body = new TextPart("html")
+                                    {
+                                        Text = string.Format("Seu código de verificação é: <strong>{0}</strong>", codigoVerificacao)
+                                    };
+
+                                    client.Send(message);
+                                    client.Disconnect(true);
+                                }
+
+                                return codigoVerificacao;
+                            }
+                            else
+                            {
+                                throw new InvalidCredentialsException("As credenciais fornecidas são inválidas. Verifique se o e-mail digitado está correto.");
+                            }
                         }
-
-                        return codigoVerificacao;
-                    }
-                    else
-                    {
-                        throw new InvalidCredentialsException("As credenciais fornecidas são inválidas. Verifique se o e-mail digitado está correto.");
                     }
                 }
                 catch (MySqlException ex)
                 {
                     throw new Exception("Erro ao executar consulta no banco de dados", ex);
                 }
-                finally
-                {
-                    try
-                    {
-                        if (conexao.State == System.Data.ConnectionState.Open)
-                        {
-                            conexao.Close();
-                        }
-                    }
-                    catch (MySqlException ex)
-                    {
-                        throw new Exception("Erro ao fechar conexão com o banco de dados", ex);
-                    }
-                }
             }
         }
 
 
-        internal static string RedefinirSenha(Cliente cliente)
+        public string RedefinirSenha(Cliente cliente)
         {
-            using (MySqlConnection conexao = new MySqlConnection(enderecoConexao))
+            using (var conexao = new MySqlConnection(enderecoConexao))
             {
                 try
                 {
-                    try
-                    {
-                        conexao.Open();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        throw new Exception("Erro ao abrir conexão com o banco de dados", ex);
-                    }
+                    conexao.Open();
 
-                    MySqlCommand qry = new MySqlCommand(
-                        "UPDATE CLIENTE SET SENHA = @senha WHERE EMAIL = @email", conexao);
-                    qry.Parameters.AddWithValue("@senha", cliente.Senha);
-                    qry.Parameters.AddWithValue("@email", cliente.Email);
-
-                    int linhasAfetadas = qry.ExecuteNonQuery();
-                    if (linhasAfetadas > 0)
+                    using (var qry = new MySqlCommand("UPDATE CLIENTE SET SENHA = @senha WHERE EMAIL = @email", conexao))
                     {
-                        return "Senha alterada com sucesso";
-                    }
-                    else { return "Não foi possível cadastrar"; }
+                        qry.Parameters.AddWithValue("@senha", cliente.Senha);
+                        qry.Parameters.AddWithValue("@email", cliente.Email);
 
+                        int linhasAfetadas = qry.ExecuteNonQuery();
+                        if (linhasAfetadas > 0)
+                        {
+                            return "Senha alterada com sucesso";
+                        }
+                        else
+                        {
+                            return "Não foi possível cadastrar";
+                        }
+                    }
                 }
                 catch (MySqlException e)
                 {
                     throw new Exception("Erro ao executar consulta no banco de dados", e);
                 }
-                finally
-                {
-                    try
-                    {
-                        if (conexao.State == System.Data.ConnectionState.Open)
-                        {
-                            conexao.Close();
-                        }
-                    }
-                    catch (MySqlException ex)
-                    {
-                        throw new Exception("Erro ao fechar conexão com o banco de dados", ex);
-                    }
-                }
             }
         }
-    }   
+    }
 }

@@ -9,19 +9,13 @@ namespace SmartEnergyAPI.Controllers
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private readonly Login login;
-
-        public LoginController()
-        {
-            login = new Login();
-        }
 
         [HttpPost]
-        public IActionResult Login([FromBody] Cliente loginCliente)
+        public IActionResult Login([FromBody] Login loginCliente)
         {
             try
             {
-                Cliente cliente = login.ValidarLogin(loginCliente);
+                Cliente cliente = loginCliente.ValidarLogin(loginCliente);
                 string json = JsonConvert.SerializeObject(cliente);
                 return Ok(json);
             }

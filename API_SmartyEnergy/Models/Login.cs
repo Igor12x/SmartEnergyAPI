@@ -1,13 +1,22 @@
 ﻿using Microsoft.VisualStudio.Services.WebApi.Jwt;
 using MySql.Data.MySqlClient;
+using System.ComponentModel.DataAnnotations;
 
 namespace SmartEnergyAPI.Models
 {
     public class Login
     {
+        private string cpf, senha;
+
         private readonly string connectionString = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
 
-        public Cliente ValidarLogin(Cliente loginCliente)
+        public Login(string cpf, string senha)
+        {
+            this.cpf = cpf;
+            this.senha = senha;
+        }
+
+        public Cliente ValidarLogin(Login loginCliente)
         {
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
@@ -47,5 +56,11 @@ namespace SmartEnergyAPI.Models
                 }
             }
         }
+
+        [Required(ErrorMessage = "O campo CPF é obrigatório.")]
+        public string Cpf { get => cpf; set => cpf = value; }
+
+        [Required(ErrorMessage = "O campo Senha é obrigatório.")]
+        public string Senha { get => senha; set => senha = value; }
     }
 }
