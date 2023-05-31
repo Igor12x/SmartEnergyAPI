@@ -1,19 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Services.WebApi.Jwt;
 using Newtonsoft.Json;
 using SmartEnergyAPI.Models;
 
-namespace SmartEnergyAPI.Controllers {
-
+namespace SmartEnergyAPI.Controllers
+{
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : ControllerBase {
-        [HttpPost]
-        public IActionResult Login([FromBody] Login login) {
+    public class LoginController : ControllerBase
+    {
+        private readonly Login login;
 
-            Cliente cliente = (Cliente)login.ValidarLogin(login);
-            string json = JsonConvert.SerializeObject(cliente); 
-            return Ok(json); 
+        public LoginController()
+        {
+            login = new Login();
         }
 
+        [HttpPost]
+        public IActionResult Login([FromBody] Cliente loginCliente)
+        {
+            try
+            {
+                Cliente cliente = login.ValidarLogin(loginCliente);
+                string json = JsonConvert.SerializeObject(cliente);
+                return Ok(json);
+            }
+            catch (InvalidCredentialsException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

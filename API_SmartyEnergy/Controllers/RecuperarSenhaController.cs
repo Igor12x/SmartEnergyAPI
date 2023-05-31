@@ -1,5 +1,6 @@
 ﻿using API_SmartyEnergy.Models;
 using Microsoft.AspNetCore.Mvc;
+using SmartEnergyAPI.Models;
 
 namespace API_SmartyEnergy.Controllers
 {
@@ -16,7 +17,7 @@ namespace API_SmartyEnergy.Controllers
         }
         
         [HttpPut("RedefinirSenha")]
-        public IActionResult AlterarSenhaCliente([FromBody]  Cliente cliente)
+        public IActionResult AlterarSenhaCliente([FromBody] Cliente cliente)
         {            
             return Ok(RecuperarSenha.RedefinirSenha(cliente));
         }

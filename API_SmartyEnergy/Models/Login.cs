@@ -1,66 +1,51 @@
 ﻿using Microsoft.VisualStudio.Services.WebApi.Jwt;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace SmartEnergyAPI.Models {
-    public class Login {
-        static MySqlConnection conexao = new MySqlConnection("server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234");
+namespace SmartEnergyAPI.Models
+{
+    public class Login
+    {
+        private readonly string connectionString = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
 
+        public Cliente ValidarLogin(Cliente loginCliente)
+        {
+            using (MySqlConnection conexao = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conexao.Open();
 
-        private string cpf;
-        private string senha;
-        public string Cpf { get => cpf; set => cpf = value; }
-        public string Senha { get => senha; set => senha = value; }
+                    string query = "SELECT * FROM cliente WHERE cpf = @cpf and senha = @senha";
+                    MySqlCommand command = new MySqlCommand(query, conexao);
+                    command.Parameters.AddWithValue("@cpf", loginCliente.Cpf);
+                    command.Parameters.AddWithValue("@senha", loginCliente.Senha);
 
-        public Login(string cpf, string senha) {
-            Cpf = cpf;
-            Senha = senha;
-        }
+                    using (MySqlDataReader leitor = command.ExecuteReader())
+                    {
+                        if (leitor.Read())
+                        {
+                            Cliente cliente = new Cliente(
+                                leitor["nome"].ToString(),
+                                leitor["sobrenome"].ToString(),
+                                leitor["cpf"].ToString(),
+                                leitor["email"].ToString(),
+                                leitor["telefone"].ToString(),
+                                leitor["senha"].ToString(),
+                                int.Parse(leitor["codigo"].ToString()));
 
-        internal Cliente ValidarLogin(Login login) {
-            try {
-                conexao.Open();
-            } catch (MySqlException ex) {
-                throw new Exception("Erro ao abrir conexão com o banco de dados", ex);
-            }
-
-            try {
-                MySqlCommand qry = new MySqlCommand(
-                    "SELECT * FROM cliente WHERE cpf = @cpf and senha = @senha", conexao);
-                qry.Parameters.AddWithValue("@cpf", login.Cpf);
-                qry.Parameters.AddWithValue("@senha", login.Senha);
-
-                MySqlDataReader leitor = qry.ExecuteReader();
-
-                if (leitor.Read()) {
-                    Cliente cliente = new Cliente(
-                        leitor["nome"].ToString(),
-                        leitor["sobrenome"].ToString(),
-                        leitor["cpf"].ToString(),
-                        leitor["email"].ToString(),
-                        leitor["telefone"].ToString(),
-                        leitor["senha"].ToString(),
-                        int.Parse(leitor["codigo"].ToString()));
-                    return cliente;
-                } else {
-                    throw new InvalidCredentialsException("As credenciais fornecidas são inválidas. Verifique se o CPF e a senha estão corretos.");
-                }
-            } catch (MySqlException ex) {
-                throw new Exception("Erro ao executar consulta no banco de dados", ex);
-            } finally {
-                try {
-                    if (conexao.State == System.Data.ConnectionState.Open) {
-                        conexao.Close();
+                            return cliente;
+                        }
+                        else
+                        {
+                            throw new InvalidCredentialsException("As credenciais fornecidas são inválidas. Verifique se o CPF e a senha estão corretas.");
+                        }
                     }
-                } catch (MySqlException ex) {
-                    throw new Exception("Erro ao fechar conexão com o banco de dados", ex);
+                }
+                catch (MySqlException ex)
+                {
+                    throw new Exception("Erro ao executar consulta no banco de dados", ex);
                 }
             }
         }
-
-
     }
 }
