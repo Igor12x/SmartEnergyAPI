@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Services.WebApi.Jwt;
 using MimeKit;
 using MySql.Data.MySqlClient;
 using SmartEnergyAPI.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API_SmartyEnergy.Models
 {
@@ -14,6 +16,7 @@ namespace API_SmartyEnergy.Models
         private readonly bool _useSsl;
         private readonly string _usuarioEmail;
         private readonly string _senha;
+        private string email, senha;
 
         private static string enderecoConexao = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
 
@@ -26,7 +29,14 @@ namespace API_SmartyEnergy.Models
             _senha = senha;
         }
 
-        public string EnviarCodigoVerificacao(string emailCliente)
+        [JsonConstructor]
+        public RecuperarSenha(string email, string senha)
+        {
+            this.email = email;
+            this.senha = senha;
+        }
+
+        public static string EnviarCodigoVerificacao(string emailCliente)
         {
             using (var conexao = new MySqlConnection(enderecoConexao))
             {
@@ -87,7 +97,7 @@ namespace API_SmartyEnergy.Models
         }
 
 
-        public string RedefinirSenha(Cliente cliente)
+        public string RedefinirSenha(RecuperarSenha novaSenhaCliente)
         {
             using (var conexao = new MySqlConnection(enderecoConexao))
             {
@@ -97,8 +107,8 @@ namespace API_SmartyEnergy.Models
 
                     using (var qry = new MySqlCommand("UPDATE CLIENTE SET SENHA = @senha WHERE EMAIL = @email", conexao))
                     {
-                        qry.Parameters.AddWithValue("@senha", cliente.Senha);
-                        qry.Parameters.AddWithValue("@email", cliente.Email);
+                        qry.Parameters.AddWithValue("@senha", novaSenhaCliente.Senha);
+                        qry.Parameters.AddWithValue("@email", novaSenhaCliente.Email);
 
                         int linhasAfetadas = qry.ExecuteNonQuery();
                         if (linhasAfetadas > 0)
@@ -117,5 +127,12 @@ namespace API_SmartyEnergy.Models
                 }
             }
         }
+
+        [Required(ErrorMessage = "O campo Email é obrigatório.")]
+        [EmailAddress(ErrorMessage = "O campo Email deve ser um endereço de e-mail válido.")]
+        public string Email { get => email; set => email = value; }
+
+        [Required(ErrorMessage = "O campo Senha é obrigatório.")]
+        public string Senha { get => senha; set => senha = value; }
     }
 }

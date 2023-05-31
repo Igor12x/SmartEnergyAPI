@@ -9,19 +9,12 @@ namespace API_SmartyEnergy.Controllers
     [Route("api/[controller]")]
     public class RecuperarSenhaController : ControllerBase
     {
-        private readonly RecuperarSenha _recuperarSenha;
-
-        public RecuperarSenhaController(RecuperarSenha recuperarSenha)
-        {
-            _recuperarSenha = recuperarSenha;
-        }
-
         [HttpGet("CodigoVerificacao/{email}")]
         public IActionResult EnviarCodigoVerificacao(string email)
         {
             try
             {
-                string codigoVerificacao = _recuperarSenha.EnviarCodigoVerificacao(email);
+                string codigoVerificacao = RecuperarSenha.EnviarCodigoVerificacao(email);
                 return Ok(codigoVerificacao);
             }
             catch (InvalidCredentialsException ex)
@@ -35,11 +28,11 @@ namespace API_SmartyEnergy.Controllers
         }
 
         [HttpPost("RedefinirSenha")]
-        public IActionResult RedefinirSenha([FromBody] Cliente cliente)
+        public IActionResult RedefinirSenha([FromBody] RecuperarSenha novaSenhaCliente)
         {
             try
             {
-                string resultado = _recuperarSenha.RedefinirSenha(cliente);
+                string resultado = novaSenhaCliente.RedefinirSenha(novaSenhaCliente);
                 return Ok(resultado);
             }
             catch (Exception ex)
