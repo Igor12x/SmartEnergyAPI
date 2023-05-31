@@ -1,16 +1,30 @@
-﻿using API_SmartEnergy.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SmartEnergyAPI.Models;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace API_SmartEnergy.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CadastroController : ControllerBase {
+    public class CadastroController : ControllerBase
+    {
         [HttpPost]
-        public IActionResult Post([FromBody] Cliente cliente) {
-            return Ok(Cadastro.Cadastrar(cliente));
+        public IActionResult Cadastrar([FromBody] Cliente cliente)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                Cadastro cadastro = new Cadastro();
+                Cliente clienteCadastrado = cadastro.Cadastrar(cliente);
+                return Ok(new { nome = clienteCadastrado.Nome });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { erro = $"Erro ao cadastrar o cliente: {ex.Message}" });
+            }
         }
     }
 }
