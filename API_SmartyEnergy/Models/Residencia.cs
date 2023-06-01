@@ -1,26 +1,33 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using MySql.Data.MySqlClient;
 
 namespace API_SmartyEnergy.Models
 {
     public class Residencia
     {
-        private int codigo;
-        private string logradouro;
-        private int numero;
-        private string complemento;
-        private string bairro;
-        private string uf;
-        private string municipio;
-        private string cep;
+        [Required(ErrorMessage = "O campo Código é obrigatório.")]
+        public int Codigo { get; set; }
 
-        public int Codigo { get => codigo; set => codigo = value; }
-        public string Logradouro { get => logradouro; set => logradouro = value; }
-        public int Numero { get => numero; set => numero = value; }
-        public string Complemento { get => complemento; set => complemento = value; }
-        public string Cep { get => cep; set => cep = value; }
-        public string Municipio { get => municipio; set => municipio = value; }
-        public string Uf { get => uf; set => uf = value; }
-        public string Bairro { get => bairro; set => bairro = value; }
+        [Required(ErrorMessage = "O campo Logradouro é obrigatório.")]
+        public string Logradouro { get; set; }
+
+        [Required(ErrorMessage = "O campo Número é obrigatório.")]
+        public int Numero { get; set; }
+
+        public string Complemento { get; set; }
+
+        [Required(ErrorMessage = "O campo CEP é obrigatório.")]
+        public string Cep { get; set; }
+
+        [Required(ErrorMessage = "O campo Município é obrigatório.")]
+        public string Municipio { get; set; }
+
+        [Required(ErrorMessage = "O campo UF é obrigatório.")]
+        public string Uf { get; set; }
+
+        [Required(ErrorMessage = "O campo Bairro é obrigatório.")]
+        public string Bairro { get; set; }
 
         public Residencia(int codigo, string logradouro, int numero, string complemento, string cep, string municipio, string uf, string bairro)
         {
@@ -33,48 +40,45 @@ namespace API_SmartyEnergy.Models
             Uf = uf;
             Bairro = bairro;
         }
-        internal static List<Residencia> listar(int idCliente)
+
+        internal static List<Residencia> Listar(int idCliente)
         {
             List<Residencia> residencias = new List<Residencia>();
-            MySqlConnection conexao = new MySqlConnection("server=esn509vmysql ;database=smartenergy;user id=aluno; password=Senai1234");
-            try
+            string connectionString = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
+
+            using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
-                conexao.Open();
-                MySqlCommand qry = new MySqlCommand(
-                    "SELECT * FROM RESIDENCIA WHERE FK_CLIENTE_codigo = @cod", conexao);
-                qry.Parameters.AddWithValue("@cod", idCliente);
-
-                MySqlDataReader leitor = qry.ExecuteReader();
-
-                while (leitor.Read())
+                try
                 {
-                    Residencia r = new Residencia(
-                        int.Parse(leitor["codigo"].ToString()),
-                        leitor["logradouro"].ToString(),
-                        int.Parse(leitor["numero"].ToString()),
-                        leitor["complemento"].ToString(),
-                        leitor["cep"].ToString(),
-                        leitor["municipio"].ToString(),
-                        leitor["uf"].ToString(),
-                        leitor["bairro"].ToString()
-                        );
+                    conexao.Open();
+                    MySqlCommand qry = new MySqlCommand(
+                        "SELECT * FROM RESIDENCIA WHERE FK_CLIENTE_codigo = @cod", conexao);
+                    qry.Parameters.AddWithValue("@cod", idCliente);
 
-                    residencias.Add(r);
+                    using (MySqlDataReader leitor = qry.ExecuteReader())
+                    {
+                        while (leitor.Read())
+                        {
+                            Residencia r = new Residencia(
+                                int.Parse(leitor["codigo"].ToString()),
+                                leitor["logradouro"].ToString(),
+                                int.Parse(leitor["numero"].ToString()),
+                                leitor["complemento"].ToString(),
+                                leitor["cep"].ToString(),
+                                leitor["municipio"].ToString(),
+                                leitor["uf"].ToString(),
+                                leitor["bairro"].ToString()
+                            );
 
+                            residencias.Add(r);
+                        }
+                    }
+
+                    return residencias;
                 }
-
-                return residencias;
-
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Erro ao buscar a última fatura.", e);
-            }
-            finally
-            {
-                if (conexao != null)
+                catch (MySqlException ex)
                 {
-                    conexao.Close();
+                    throw new Exception("Erro ao buscar as residências.", ex);
                 }
             }
         }
