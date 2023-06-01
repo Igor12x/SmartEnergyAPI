@@ -27,13 +27,13 @@ namespace API_SmartyEnergy.Controllers
             }
         }
 
-        [HttpPost("RedefinirSenha")]
+        [HttpPut("RedefinirSenha")]
         public IActionResult RedefinirSenha([FromBody] RecuperarSenha novaSenhaCliente)
         {
             try
             {
                 string resultado = novaSenhaCliente.RedefinirSenha(novaSenhaCliente);
-                return Ok(resultado);
+                return Ok(new { retorno = resultado });
             }
             catch (Exception ex)
             {
