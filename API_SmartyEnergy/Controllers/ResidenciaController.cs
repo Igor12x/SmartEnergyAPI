@@ -1,19 +1,20 @@
 ﻿using API_SmartyEnergy.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
-namespace API_SmartyEnergy.Controllers
-{
+namespace API_SmartyEnergy.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class ResidenciaController : ControllerBase
-    {
+    public class ResidenciaController : ControllerBase {
         [HttpGet("listarResidencias/{id}")]
-        public IActionResult ListarResidencias(int id)
-        {
-            var residencias = Residencia.Listar(id);
-            string json = JsonConvert.SerializeObject(residencias);
-            return Ok(json);
+        public IActionResult ListarResidencias(int id) {
+            try {
+                List<Residencia> residencias = Residencia.Listar(id);
+                return Ok(residencias);
+            } catch (Exception ex) {
+                return StatusCode(500, $"Erro ao buscar as residências: {ex.Message}");
+            }
         }
     }
 }
