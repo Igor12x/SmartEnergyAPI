@@ -18,7 +18,7 @@ namespace API_SmartyEnergy.Models
         private readonly string _senha;
         private string email, senha;
 
-        private static string enderecoConexao = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
+        private static string enderecoConexao = "server=localhost; database=smartenergy; user id=root; password=9133";
 
         public RecuperarSenha(string host, int port, bool useSsl, string usuarioEmail, string senha)
         {

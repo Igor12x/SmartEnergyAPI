@@ -82,5 +82,37 @@ namespace API_SmartyEnergy.Models
                 }
             }
         }
+        internal static bool VerificarCadastro(string cpf)
+        {
+            string connectionString = "server=localhost; database=smartenergy; user id=root; password=9133";
+
+            using (MySqlConnection conexao = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conexao.Open();
+
+                    MySqlCommand qryCliente = new MySqlCommand(
+                        "SELECT codigo FROM CLIENTE WHERE cpf = @cpf", conexao);
+                    qryCliente.Parameters.AddWithValue("@cpf", cpf);
+
+                    int clienteCodigo = Convert.ToInt32(qryCliente.ExecuteScalar());
+
+                    MySqlCommand qryResidencia = new MySqlCommand(
+                        "SELECT COUNT(*) FROM RESIDENCIA WHERE FK_CLIENTE_codigo = @cod", conexao);
+                    qryResidencia.Parameters.AddWithValue("@cod", clienteCodigo);
+
+                    int count = Convert.ToInt32(qryResidencia.ExecuteScalar());
+
+                    return count > 0;
+                }
+                catch (MySqlException ex)
+                {
+                    throw new Exception("Erro ao verificar se o usuário possui uma residência cadastrada.", ex);
+                }
+            }
+        }
+
+
     }
 }

@@ -15,5 +15,9 @@ namespace API_SmartyEnergy.Controllers
             string json = JsonConvert.SerializeObject(residencias);
             return Ok(json);
         }
+        [HttpGet("verificarResidenciaCadastrada/{cpf}")]
+        public IActionResult VerificarResidenciaCadastrada(string cpf) {
+           return Ok(Residencia.VerificarCadastro(cpf));
+        }
     }
 }

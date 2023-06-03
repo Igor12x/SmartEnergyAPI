@@ -5,7 +5,7 @@ namespace SmartEnergyAPI.Models
 {
     public class Cadastro
     {
-        private readonly string connectionString = "server=esn509vmysql; database=smartenergy; user id=aluno; password=Senai1234";
+        private readonly string connectionString = "server=esn509vmysql ;database=smartenergy ;user id=aluno; password=Senai1234";
 
         public Cliente Cadastrar(Cliente cliente)
         {
