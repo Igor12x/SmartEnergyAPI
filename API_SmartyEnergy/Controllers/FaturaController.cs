@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartAPI.Models;
 
 namespace SmartAPI.Controllers {
-
     [ApiController]
     [Route("api/[controller]")]
     public class FaturaController : ControllerBase {
-
-        [HttpGet("UltimaFatura/{id}")]
-        public IActionResult buscarValorUltimaFatura(int id)
-        {
-            string json = JsonConvert.SerializeObject(Fatura.buscarValorUltimaFatura(id));
-            return Ok(json);
-
+        /// <summary>
+        /// Obtém a última fatura com base no ID da Residência
+        /// </summary>
+        /// <param name="idResidencia">ID da Residência</param>
+        /// <returns>O valor e o consumo registrado na ultima fatura</returns>
+        [HttpGet("UltimaFatura/{idResidencia}")]
+        public IActionResult BuscarValorUltimaFatura(int idResidencia) {
+            try {
+                Fatura fatura = Fatura.BuscarValorUltimaFatura(idResidencia);
+                return Ok(fatura);
+            } catch (Exception ex) {
+                return StatusCode(500, $"Erro ao buscar a última fatura: {ex.Message}");
+            }
         }
     }
 }

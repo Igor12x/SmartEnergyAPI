@@ -9,11 +9,17 @@ namespace API_SmartyEnergy.Controllers
     [ApiController]
     public class AlterarCadastroController : ControllerBase
     {
-        [HttpPut("{id}")]
-        public IActionResult AlterarCliente([FromBody] AlterarCadastro dados, int id)
+        /// <summary>
+        /// Altera os dados de cadastro de um cliente.
+        /// </summary>
+        /// <param name="dadosCliente">Objeto contendo os dados de alteração (Email e Telefone).</param>
+        /// <param name="idCliente">ID do cliente a ser alterado.</param>
+        /// <returns>O cliente atualizado.</returns>
+        [HttpPut("{idCliente}")]
+        public IActionResult AlterarCliente([FromBody] AlterarCadastro dadosCliente, int idCliente)
         {
-            AlterarCadastro alterarCadastro = new AlterarCadastro(dados.Email, dados.Telefone);
-            Cliente clienteAtualizado = alterarCadastro.Alterar(id);
+            AlterarCadastro alterarCadastro = new AlterarCadastro(dadosCliente.Email, dadosCliente.Telefone);
+            Cliente clienteAtualizado = alterarCadastro.Alterar(idCliente);
             string json = JsonConvert.SerializeObject(clienteAtualizado);
             return Ok(json);
         }

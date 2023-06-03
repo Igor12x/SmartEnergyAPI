@@ -7,6 +7,11 @@ namespace API_SmartEnergy.Controllers
     [ApiController]
     public class CadastroController : ControllerBase
     {
+        /// <summary>
+        /// Cadastra um novo cliente.
+        /// </summary>
+        /// <param name="cliente">Objeto contendo os dados do cliente a ser cadastrado.</param>
+        /// <returns>O nome do cliente cadastrado.</returns>
         [HttpPost]
         public IActionResult Cadastrar([FromBody] Cliente cliente)
         {
